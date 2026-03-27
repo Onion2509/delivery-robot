@@ -1,0 +1,296 @@
+   0.077656400s  INFO prepare_target{force=false package_id=config v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\config) target="config"}: cargo::core::compiler::fingerprint: fingerprint error for config v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\config)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("config", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\config\\src\\lib.rs", Edition2024) }
+   0.077699900s  INFO prepare_target{force=false package_id=config v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\config) target="config"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\config-c893ee3cfaab0833\lib-config`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.090005100s  INFO prepare_target{force=false package_id=config v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\config) target="config"}: cargo::core::compiler::fingerprint: fingerprint error for config v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\config)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("config", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\config\\src\\lib.rs", Edition2024) }
+   0.090029400s  INFO prepare_target{force=false package_id=config v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\config) target="config"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\config-71c5e68843018dbb\test-lib-config`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.091780900s  INFO prepare_target{force=false package_id=grid_map v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\grid_map) target="grid_map"}: cargo::core::compiler::fingerprint: fingerprint error for grid_map v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\grid_map)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("grid_map", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\grid_map\\src\\lib.rs", Edition2024) }
+   0.091800900s  INFO prepare_target{force=false package_id=grid_map v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\grid_map) target="grid_map"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\grid_map-1d90edf140e8877e\lib-grid_map`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.093445900s  INFO prepare_target{force=false package_id=grid_map v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\grid_map) target="grid_map"}: cargo::core::compiler::fingerprint: fingerprint error for grid_map v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\grid_map)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("grid_map", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\grid_map\\src\\lib.rs", Edition2024) }
+   0.093463900s  INFO prepare_target{force=false package_id=grid_map v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\grid_map) target="grid_map"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\grid_map-76ccae57e12fc231\test-lib-grid_map`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.095101000s  INFO prepare_target{force=false package_id=path_planning v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\path_planning) target="path_planning"}: cargo::core::compiler::fingerprint: fingerprint error for path_planning v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\path_planning)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("path_planning", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\path_planning\\src\\lib.rs", Edition2024) }
+   0.095116100s  INFO prepare_target{force=false package_id=path_planning v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\path_planning) target="path_planning"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\path_planning-f00f58e7f14309cc\lib-path_planning`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.096673500s  INFO prepare_target{force=false package_id=path_planning v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\path_planning) target="path_planning"}: cargo::core::compiler::fingerprint: fingerprint error for path_planning v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\path_planning)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("path_planning", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\path_planning\\src\\lib.rs", Edition2024) }
+   0.096689300s  INFO prepare_target{force=false package_id=path_planning v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\path_planning) target="path_planning"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\path_planning-3860f7befbcf8db1\test-lib-path_planning`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.098554400s  INFO prepare_target{force=false package_id=planner_cli v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\apps\planner_cli) target="planner_cli"}: cargo::core::compiler::fingerprint: fingerprint error for planner_cli v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\apps\planner_cli)/Check { test: false }/TargetInner { name: "planner_cli", doc: true, ..: with_path("\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\apps\\planner_cli\\src\\main.rs", Edition2024) }
+   0.098572500s  INFO prepare_target{force=false package_id=planner_cli v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\apps\planner_cli) target="planner_cli"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\planner_cli-ec6f2dee68e7400f\bin-planner_cli`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.100164900s  INFO prepare_target{force=false package_id=planner_cli v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\apps\planner_cli) target="planner_cli"}: cargo::core::compiler::fingerprint: fingerprint error for planner_cli v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\apps\planner_cli)/Check { test: true }/TargetInner { name: "planner_cli", doc: true, ..: with_path("\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\apps\\planner_cli\\src\\main.rs", Edition2024) }
+   0.100180700s  INFO prepare_target{force=false package_id=planner_cli v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\apps\planner_cli) target="planner_cli"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\planner_cli-0d2d95d81ac1a21c\test-bin-planner_cli`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.101810800s  INFO prepare_target{force=false package_id=task_core v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\task_core) target="task_core"}: cargo::core::compiler::fingerprint: fingerprint error for task_core v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\task_core)/Check { test: false }/TargetInner { name_inferred: true, ..: lib_target("task_core", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\task_core\\src\\lib.rs", Edition2024) }
+   0.101831600s  INFO prepare_target{force=false package_id=task_core v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\task_core) target="task_core"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\task_core-62e51cc9f060046a\lib-task_core`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+   0.103856900s  INFO prepare_target{force=false package_id=task_core v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\task_core) target="task_core"}: cargo::core::compiler::fingerprint: fingerprint error for task_core v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\task_core)/Check { test: true }/TargetInner { name_inferred: true, ..: lib_target("task_core", ["lib"], "\\\\wsl.localhost\\Ubuntu-22.04\\home\\Yas\\delivery-robot\\rust_ws\\libs\\task_core\\src\\lib.rs", Edition2024) }
+   0.103882400s  INFO prepare_target{force=false package_id=task_core v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\task_core) target="task_core"}: cargo::core::compiler::fingerprint:     err: failed to read `\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\target\debug\.fingerprint\task_core-d44c85456afe5223\test-lib-task_core`
+
+Caused by:
+    系统找不到指定的文件。 (os error 2)
+
+Stack backtrace:
+   0: git_midx_writer_dump
+   1: git_midx_writer_dump
+   2: git_midx_writer_dump
+   3: git_midx_writer_dump
+   4: git_filter_source_repo
+   5: git_filter_source_repo
+   6: git_filter_source_repo
+   7: git_filter_source_repo
+   8: git_filter_source_repo
+   9: git_filter_source_repo
+  10: git_filter_source_repo
+  11: git_libgit2_prerelease
+  12: <unknown>
+  13: <unknown>
+  14: <unknown>
+  15: <unknown>
+  16: git_midx_writer_dump
+  17: git_filter_source_repo
+  18: git_midx_writer_dump
+  19: BaseThreadInitThunk
+  20: RtlUserThreadStart
+    Checking task_core v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\task_core)
+    Checking planner_cli v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\apps\planner_cli)
+    Checking path_planning v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\path_planning)
+    Checking grid_map v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\grid_map)
+    Checking config v0.1.0 (\\wsl.localhost\Ubuntu-22.04\home\Yas\delivery-robot\rust_ws\libs\config)
+error: could not compile `planner_cli` (bin "planner_cli" test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `path_planning` (lib) due to 1 previous error
+error: could not compile `planner_cli` (bin "planner_cli") due to 1 previous error
+error: could not compile `task_core` (lib test) due to 1 previous error
+error: could not compile `path_planning` (lib test) due to 1 previous error
+error: could not compile `grid_map` (lib) due to 1 previous error
+error: could not compile `config` (lib) due to 1 previous error
+error: could not compile `task_core` (lib) due to 1 previous error
+error: could not compile `config` (lib test) due to 1 previous error
+error: could not compile `grid_map` (lib test) due to 1 previous error

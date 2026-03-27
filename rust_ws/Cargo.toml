@@ -1,0 +1,10 @@
+[workspace]
+members = [
+    "libs/grid_map",
+    "libs/path_planning",
+    "libs/task_core",
+    "libs/config",
+    "apps/planner_cli",
+]
+
+resolver = "2"
