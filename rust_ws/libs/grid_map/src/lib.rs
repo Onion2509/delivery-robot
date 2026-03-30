@@ -37,13 +37,17 @@ impl GridMap {
         position.x < self.width && position.y < self.height
     }
 
-    pub fn is_walkable(&self, position: GridPosition) -> Result<bool, GridMapError> {
+    fn index_of(&self, position: GridPosition) -> Result<usize, GridMapError> {
         if self.in_bounds(position) {
-            let index = position.y * self.width + position.x;
-            Ok(self.cells[index])
+            Ok(position.y * self.width + position.x)
         } else {
             Err(GridMapError::OutOfBounds)
         }
+    }
+
+    pub fn is_walkable(&self, position: GridPosition) -> Result<bool, GridMapError> {
+        let index = self.index_of(position)?;
+        Ok(self.cells[index])
     }
 
     pub fn set_walkable(
@@ -51,13 +55,15 @@ impl GridMap {
         position: GridPosition,
         walkable: bool,
     ) -> Result<(), GridMapError> {
-        if self.in_bounds(position) {
-            let index = position.y * self.width + position.x;
-            self.cells[index] = walkable;
-            Ok(())
-        } else {
-            Err(GridMapError::OutOfBounds)
+        /*
+        let index = match self.index_of(position) {
+            Ok(value) => value,
+            Err(error) => return Err(error),
         }
+         */
+        let index = self.index_of(position)?;
+        self.cells[index] = walkable;
+        Ok(())
     }
 }
 
@@ -102,6 +108,16 @@ mod tests {
 
         assert_eq!(
             map.is_walkable(GridPosition { x: 5, y: 0 }),
+            Err(GridMapError::OutOfBounds)
+        );
+    }
+
+    #[test]
+    fn set_walkable_returns_error_for_out_of_bounds_position() {
+        let mut map = GridMap::new(3, 2);
+
+        assert_eq!(
+            map.set_walkable(GridPosition { x: 9, y: 0 }, false),
             Err(GridMapError::OutOfBounds)
         );
     }
