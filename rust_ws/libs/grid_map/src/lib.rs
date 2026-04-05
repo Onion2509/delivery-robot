@@ -1,5 +1,3 @@
-use std::vec;
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct GridPosition {
     pub x: usize,
@@ -57,12 +55,6 @@ impl GridMap {
         position: GridPosition,
         walkable: bool,
     ) -> Result<(), GridMapError> {
-        /*
-        let index = match self.index_of(position) {
-            Ok(value) => value,
-            Err(error) => return Err(error),
-        }
-         */
         let index = self.index_of(position)?;
         self.cells[index] = walkable;
         Ok(())
