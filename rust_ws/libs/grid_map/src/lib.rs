@@ -1,3 +1,5 @@
+use std::vec;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct GridPosition {
     pub x: usize,
@@ -65,6 +67,58 @@ impl GridMap {
         self.cells[index] = walkable;
         Ok(())
     }
+
+    pub fn neighbors(&self, position: GridPosition) -> Result<Vec<GridPosition>, GridMapError> {
+        self.index_of(position)?;
+
+        let mut neighbors = Vec::new();
+
+        if position.y > 0 {
+            let up = GridPosition {
+                x: position.x,
+                y: position.y - 1,
+            };
+
+            if self.is_walkable(up)? {
+                neighbors.push(up);
+            }
+        }
+
+        if position.x + 1 < self.width {
+            let right = GridPosition {
+                x: position.x + 1,
+                y: position.y,
+            };
+
+            if self.is_walkable(right)? {
+                neighbors.push(right);
+            }
+        }
+
+        if position.y + 1 < self.height {
+            let down = GridPosition {
+                x: position.x,
+                y: position.y + 1,
+            };
+
+            if self.is_walkable(down)? {
+                neighbors.push(down);
+            }
+        }
+
+        if position.x > 0 {
+            let left = GridPosition {
+                x: position.x - 1,
+                y: position.y,
+            };
+
+            if self.is_walkable(left)? {
+                neighbors.push(left);
+            }
+        }
+
+        Ok(neighbors)
+    }
 }
 
 #[cfg(test)]
@@ -97,7 +151,8 @@ mod tests {
     fn can_set_obstacle_and_read_it() {
         let mut map = GridMap::new(3, 2);
 
-        map.set_walkable(GridPosition { x: 1, y: 1 }, false).unwrap();
+        map.set_walkable(GridPosition { x: 1, y: 1 }, false)
+            .unwrap();
 
         assert_eq!(map.is_walkable(GridPosition { x: 1, y: 1 }), Ok(false));
     }
@@ -118,6 +173,48 @@ mod tests {
 
         assert_eq!(
             map.set_walkable(GridPosition { x: 9, y: 0 }, false),
+            Err(GridMapError::OutOfBounds)
+        );
+    }
+
+    #[test]
+    fn middle_position_returns_four_neighbors() {
+        let map = GridMap::new(3, 3);
+
+        assert_eq!(
+            map.neighbors(GridPosition { x: 1, y: 1 }),
+            Ok(vec![
+                GridPosition { x: 1, y: 0 },
+                GridPosition { x: 2, y: 1 },
+                GridPosition { x: 1, y: 2 },
+                GridPosition { x: 0, y: 1 },
+            ])
+        );
+    }
+
+    #[test]
+    fn obstacle_neighbor_is_filtered_out() {
+        let mut map = GridMap::new(3, 3);
+
+        map.set_walkable(GridPosition { x: 2, y: 1 }, false)
+            .unwrap();
+
+        assert_eq!(
+            map.neighbors(GridPosition { x: 1, y: 1 }),
+            Ok(vec![
+                GridPosition { x: 1, y: 0 },
+                GridPosition { x: 1, y: 2 },
+                GridPosition { x: 0, y: 1 },
+            ])
+        );
+    }
+
+    #[test]
+    fn out_of_bounds_position_has_no_neighbors() {
+        let map = GridMap::new(3, 3);
+
+        assert_eq!(
+            map.neighbors(GridPosition { x: 10, y: 10 }),
             Err(GridMapError::OutOfBounds)
         );
     }
