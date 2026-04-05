@@ -1,14 +1,52 @@
-pub fn add(left: u64, right: u64) -> u64 {
-    left + right
+use grid_map::{GridMap, GridPosition};
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum PathPlanningError {
+    StartOutOfBounds,
+    GoalOutOfBounds,
+    StartBlocked,
+    GoalBlocked,
+    NoPathFound,
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
+pub trait PathPlanner {
+    fn plan(
+        &self,
+        map: &GridMap,
+        start: GridPosition,
+        goal: GridPosition,
+    ) -> Result<Vec<GridPosition>, PathPlanningError>;
+}
 
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+pub struct AStartPlanner;
+
+impl PathPlanner for AStartPlanner {
+    fn plan(
+        &self,
+        map: &GridMap,
+        start: GridPosition,
+        goal: GridPosition,
+    ) -> Result<Vec<GridPosition>, PathPlanningError> {
+        if !map.in_bounds(start) {
+            return Err(PathPlanningError::StartOutOfBounds);
+        }
+
+        if !map.in_bounds(goal) {
+            return Err(PathPlanningError::GoalOutOfBounds);
+        }
+
+        if map.is_walkable(start) == Ok(false) {
+            return Err(PathPlanningError::StartBlocked);
+        }
+
+        if map.is_walkable(goal) == Ok(false) {
+            return Err(PathPlanningError::GoalBlocked);
+        }
+
+        if start == goal {
+            return Ok(vec![start]);
+        }
+
+        Err(PathPlanningError::NoPathFound)
     }
 }

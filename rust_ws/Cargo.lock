@@ -13,6 +13,9 @@ version = "0.1.0"
 [[package]]
 name = "path_planning"
 version = "0.1.0"
+dependencies = [
+ "grid_map",
+]
 
 [[package]]
 name = "planner_cli"
