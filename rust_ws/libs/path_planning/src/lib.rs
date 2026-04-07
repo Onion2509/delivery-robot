@@ -1,4 +1,5 @@
 use grid_map::{GridMap, GridPosition};
+use std::cmp::Ordering;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PathPlanningError {
@@ -16,6 +17,36 @@ pub trait PathPlanner {
         start: GridPosition,
         goal: GridPosition,
     ) -> Result<Vec<GridPosition>, PathPlanningError>;
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+struct FrontierEntry {
+    position: GridPosition,
+    priority: usize,
+}
+
+impl Ord for FrontierEntry {
+    fn cmp(&self, other: &Self) -> Ordering {
+        let priority_order = other.priority.cmp(&self.priority);
+
+        if priority_order != Ordering::Equal {
+            return priority_order;
+        }
+
+        let y_order = other.position.y.cmp(&self.position.y);
+
+        if y_order != Ordering::Equal {
+            return y_order;
+        }
+
+        other.position.x.cmp(&self.position.x)
+    }
+}
+
+impl PartialOrd for FrontierEntry {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 pub struct AStartPlanner;
@@ -54,6 +85,7 @@ impl PathPlanner for AStartPlanner {
 #[cfg(test)]
 mod test {
     use super::*;
+    use std::collections::BinaryHeap;
 
 
     #[test]
@@ -145,5 +177,25 @@ mod test {
             ),
             Err(PathPlanningError::NoPathFound)
         );
+    }
+
+    #[test]
+    fn lower_priority_entry_is_popped_first() {
+        let mut frontier = BinaryHeap::new();
+
+        frontier.push(FrontierEntry {
+            position: GridPosition { x: 0, y: 0 },
+            priority: 5,
+        });
+
+        frontier.push(FrontierEntry {
+            position: GridPosition { x: 1, y: 0 },
+            priority: 1,
+        });
+
+        let first = frontier.pop().unwrap();
+
+        assert_eq!(first.position, GridPosition { x: 1, y:0 });
+        assert_eq!(first.priority, 1);
     }
 }
