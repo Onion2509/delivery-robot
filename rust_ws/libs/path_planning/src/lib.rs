@@ -1,5 +1,6 @@
 use grid_map::{GridMap, GridPosition};
 use std::cmp::Ordering;
+use std::collections::HashMap;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PathPlanningError {
@@ -46,6 +47,17 @@ impl Ord for FrontierEntry {
 impl PartialOrd for FrontierEntry {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
+    }
+}
+
+fn should_update_cost(
+    cost_so_far: &HashMap<GridPosition, usize>,
+    position: GridPosition,
+    new_cost: usize,
+) -> bool {
+    match cost_so_far.get(&position).copied() {
+        Some(old_cost) => new_cost < old_cost,
+        None => true, 
     }
 }
 
@@ -197,5 +209,63 @@ mod test {
 
         assert_eq!(first.position, GridPosition { x: 1, y:0 });
         assert_eq!(first.priority, 1);
+    }
+
+    #[test]
+    fn hash_map_can_store_and_read_cost() {
+        let start = GridPosition { x: 0, y: 0 };
+        let mut cost_so_far: HashMap<GridPosition, usize> = HashMap::new();
+
+        cost_so_far.insert(start, 0);
+
+        assert_eq!(cost_so_far.get(&start).copied(), Some(0));
+    }
+
+    #[test]
+    fn hash_map_can_store_and_read_parent() {
+        let start = GridPosition { x: 0, y: 0 };
+        let goal = GridPosition { x: 1, y: 0 };
+        let mut came_from: HashMap<GridPosition, GridPosition> = HashMap::new();
+
+        came_from.insert(goal, start);
+
+        assert_eq!(came_from.get(&goal).copied(), Some(start));
+        assert_eq!(came_from.get(&start).copied(), None);
+    }
+
+    #[test]
+    fn should_update_cost_for_new_position() {
+        let cost_so_far: HashMap<GridPosition, usize> = HashMap::new();
+
+        assert_eq!(
+            should_update_cost(&cost_so_far, GridPosition { x: 1, y: 1 }, 3),
+            true
+        );
+    }
+
+    #[test]
+    fn should_update_cost_when_new_cost_is_smaller() {
+        let position = GridPosition { x: 1, y: 1 };
+        let mut cost_so_far: HashMap<GridPosition, usize> = HashMap::new();
+
+        cost_so_far.insert(position, 5);
+
+        assert_eq!(
+            should_update_cost(&cost_so_far, position, 3),
+            true
+        );
+    }
+
+    #[test]
+    fn should_not_update_cost_when_new_cost_is_not_smaller() {
+        let position = GridPosition { x: 1, y: 1 };
+        let mut cost_so_far: HashMap<GridPosition, usize> = HashMap::new();
+
+        cost_so_far.insert(position, 3);
+
+        assert_eq!(
+            should_update_cost(&cost_so_far, position, 5),
+            false
+        );
     }
 }
