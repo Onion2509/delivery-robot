@@ -61,6 +61,31 @@ fn should_update_cost(
     }
 }
 
+fn reconstruct_path(
+    came_from: &HashMap<GridPosition, GridPosition>,
+    start: GridPosition,
+    goal: GridPosition,
+) -> Result<Vec<GridPosition>, PathPlanningError> {
+    if start == goal {
+        return Ok(vec![start]);
+    }
+
+    let mut current = goal;
+    let mut path = vec![goal];
+
+    while let Some(previous) = came_from.get(&current).copied() {
+        current = previous;
+        path.push(current);
+
+        if current == start {
+            path.reverse();
+            return Ok(path);
+        }
+    }
+
+    Err(PathPlanningError::NoPathFound)
+}
+
 pub struct AStartPlanner;
 
 impl PathPlanner for AStartPlanner {
@@ -266,6 +291,45 @@ mod test {
         assert_eq!(
             should_update_cost(&cost_so_far, position, 5),
             false
+        );
+    }
+
+    #[test]
+    fn reconstruct_path_returns_full_path_when_chain_exists() {
+        let start = GridPosition { x: 0, y: 0 };
+        let middle = GridPosition { x: 1, y: 0 };
+        let goal = GridPosition { x: 2, y: 0 };
+        let mut came_from: HashMap<GridPosition, GridPosition> = HashMap::new();
+
+        came_from.insert(middle, start);
+        came_from.insert(goal, middle);
+
+        assert_eq!(
+            reconstruct_path(&came_from, start, goal),
+            Ok(vec![start, middle, goal])
+        );
+    }
+
+    #[test]
+    fn reconstruct_path_returns_single_point_when_start_equals_goal() {
+        let point = GridPosition { x: 1, y: 1 };
+        let came_from: HashMap<GridPosition, GridPosition> = HashMap::new();
+
+        assert_eq!(
+            reconstruct_path(&came_from, point, point),
+            Ok(vec![point])
+        );
+    }
+
+    #[test]
+    fn reconstruct_path_returns_error_when_chain_is_missing() {
+        let start = GridPosition { x: 0, y: 0 };
+        let goal = GridPosition { x: 2, y: 2 };
+        let mut came_from: HashMap<GridPosition, GridPosition> = HashMap::new();
+
+        assert_eq!(
+            reconstruct_path(&came_from, start, goal),
+            Err(PathPlanningError::NoPathFound)
         );
     }
 }
