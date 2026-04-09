@@ -1,6 +1,6 @@
 use grid_map::{GridMap, GridPosition};
 use std::cmp::Ordering;
-use std::collections::HashMap;
+use std::collections::{HashMap, BinaryHeap};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum PathPlanningError {
@@ -26,6 +26,7 @@ struct FrontierEntry {
     priority: usize,
 }
 
+//待探索节点
 impl Ord for FrontierEntry {
     fn cmp(&self, other: &Self) -> Ordering {
         let priority_order = other.priority.cmp(&self.priority);
@@ -119,6 +120,51 @@ impl PathPlanner for AStartPlanner {
             return Ok(vec![start]);
         }
 
+        let mut frontier = BinaryHeap::new();
+        frontier.push(FrontierEntry {
+            position: start,
+            priority: 0,
+        });
+
+        let mut came_from: HashMap<GridPosition, GridPosition> = HashMap::new();
+        let mut cost_so_far: HashMap<GridPosition, usize> = HashMap::new();
+
+        cost_so_far.insert(start, 0);
+
+        while let Some(current_entry) = frontier.pop() {
+            let current = current_entry.position;
+
+            if current == goal {
+                return reconstruct_path(&came_from, start, goal)
+            }
+
+            let current_cost = match cost_so_far.get(&current).copied() {
+                Some(cost) => cost,
+                None => continue,
+            };
+
+            let neighbors = match map.neighbors(current) {
+                Ok(neighbors) => neighbors,
+                Err(_) => return Err(PathPlanningError::NoPathFound),
+            };
+
+            for next in neighbors {
+                let new_cost = current_cost + 1;
+
+                if should_update_cost(&cost_so_far, next, new_cost) {
+                    cost_so_far.insert(next, new_cost);
+                    came_from.insert(next, current);
+
+                    let priority = new_cost + heuristic(next, goal);
+
+                    frontier.push(FrontierEntry {
+                        position: next,
+                        priority,
+                    });
+                }
+            }
+        }
+
         Err(PathPlanningError::NoPathFound)
     }
 }
@@ -206,9 +252,29 @@ mod test {
     }
 
     #[test]
-    fn returns_no_path_found_for_different_points_in_stub_version() {
+    fn finds_path_on_open_grid() {
         let planner = AStartPlanner;
         let map = GridMap::new(3, 3);
+
+        let path = planner
+            .plan(
+                &map,
+                GridPosition { x: 0, y: 0 },
+                GridPosition { x: 2, y: 2 },
+            ).unwrap();
+        
+        assert_eq!(path.first().copied(), Some(GridPosition { x: 0, y: 0 }));
+        assert_eq!(path.last().copied(), Some(GridPosition { x: 2, y: 2 }));
+        assert_eq!(path.len(), 5);
+    }
+
+    #[test]
+    fn returns_no_path_found_when_goal_is_unreachable() {
+        let planner = AStartPlanner;
+        let mut map = GridMap::new(3, 3);
+
+        map.set_walkable(GridPosition { x: 1, y: 0 }, false);
+        map.set_walkable(GridPosition { x: 0, y: 1 }, false);
 
         assert_eq!(
             planner.plan(
@@ -216,8 +282,8 @@ mod test {
                 GridPosition { x: 0, y: 0 },
                 GridPosition { x: 2, y: 2 },
             ),
-            Err(PathPlanningError::NoPathFound)
-        );
+            Err(PathPlanningError::NoPathFound),
+        )
     }
 
     #[test]
