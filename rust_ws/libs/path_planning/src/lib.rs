@@ -86,6 +86,10 @@ fn reconstruct_path(
     Err(PathPlanningError::NoPathFound)
 }
 
+fn heuristic(from: GridPosition, to: GridPosition) -> usize {
+    from.x.abs_diff(to.x) + from.y.abs_diff(to.y)
+}
+
 pub struct AStartPlanner;
 
 impl PathPlanner for AStartPlanner {
@@ -330,6 +334,25 @@ mod test {
         assert_eq!(
             reconstruct_path(&came_from, start, goal),
             Err(PathPlanningError::NoPathFound)
+        );
+    }
+
+    fn heuristic_is_zero_from_same_point() {
+        let point = GridPosition { x: 1, y: 1 };
+
+        assert_eq!(
+            heuristic(point, point),
+            0
+        );
+    }
+
+    fn heuristic_returns_manhattan_distance() {
+        let from = GridPosition { x: 1, y: 2 };
+        let to = GridPosition { x: 4, y: 6 };
+
+        assert_eq!(
+            heuristic(from, to),
+            7
         );
     }
 }
