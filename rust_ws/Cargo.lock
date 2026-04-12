@@ -20,6 +20,10 @@ dependencies = [
 [[package]]
 name = "planner_cli"
 version = "0.1.0"
+dependencies = [
+ "grid_map",
+ "path_planning",
+]
 
 [[package]]
 name = "task_core"
