@@ -273,8 +273,8 @@ mod test {
         let planner = AStartPlanner;
         let mut map = GridMap::new(3, 3);
 
-        map.set_walkable(GridPosition { x: 1, y: 0 }, false);
-        map.set_walkable(GridPosition { x: 0, y: 1 }, false);
+        map.set_walkable(GridPosition { x: 1, y: 0 }, false).unwrap();
+        map.set_walkable(GridPosition { x: 0, y: 1 }, false).unwrap();
 
         assert_eq!(
             planner.plan(
@@ -395,7 +395,7 @@ mod test {
     fn reconstruct_path_returns_error_when_chain_is_missing() {
         let start = GridPosition { x: 0, y: 0 };
         let goal = GridPosition { x: 2, y: 2 };
-        let mut came_from: HashMap<GridPosition, GridPosition> = HashMap::new();
+        let came_from: HashMap<GridPosition, GridPosition> = HashMap::new();
 
         assert_eq!(
             reconstruct_path(&came_from, start, goal),
@@ -403,6 +403,7 @@ mod test {
         );
     }
 
+    #[test]
     fn heuristic_is_zero_from_same_point() {
         let point = GridPosition { x: 1, y: 1 };
 
@@ -412,6 +413,7 @@ mod test {
         );
     }
 
+    #[test]
     fn heuristic_returns_manhattan_distance() {
         let from = GridPosition { x: 1, y: 2 };
         let to = GridPosition { x: 4, y: 6 };

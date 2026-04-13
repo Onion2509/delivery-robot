@@ -64,14 +64,18 @@ fn build_demo_scene(scene_id: u8) -> DemoScene {
                 GridPosition { x: 0, y: 1 },
             ],
         },
-        _ => DemoScene {
+        other => {
+            println!("unknow scene id {}, using empty scene", other);
+            
+            DemoScene {
             name: "empty",
             width: 3,
             height: 3,
             start: GridPosition { x: 0, y: 0 },
             goal: GridPosition { x: 2, y: 2 },
             obstacles: vec![],
-        },
+            }
+        }
     }
 }
 
@@ -85,22 +89,35 @@ fn build_map(scene: &DemoScene) -> GridMap {
     map
 }
 
-fn read_sccene_id() -> u8 {
+fn parse_scene_id_arg(arg: Option<&String>) -> Result<u8, &'static str> {
+    match arg {
+        Some(value) => match value.parse::<u8>() {
+            Ok(scene_id) => Ok(scene_id),
+            Err(_) => Err("invalid"),
+        },
+        None => Err("missing"),
+    }
+}
+
+fn read_scene_id() -> u8 {
     let args: Vec<String> = env::args().collect();
 
-    if args.len() < 2 {
-        return 1;
-    }
-
-    match args[1].parse::<u8>() {
+    match parse_scene_id_arg(args.get(1)) {
         Ok(scene_id) => scene_id,
-        Err(_) => 1,
+        Err("missing") => {
+            println!("no scene id provided, defaulting to scene 1");
+            1
+        }
+        Err(_) => {
+            println!("invalid scene id '{}', defaulting to scene 1", args[1]);
+            1
+        }
     }
 }
 
 fn main() {
     let planner = AStartPlanner;
-    let scene_id = read_sccene_id();
+    let scene_id = read_scene_id();
     let scene = build_demo_scene(scene_id);
     let map = build_map(&scene);
 
@@ -115,5 +132,29 @@ fn main() {
             println!("planning failed: {:?}", error);
             print_map_with_path(&map, &[], scene.start, scene.goal);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_scene_id_arg_accepts_valid_number() {
+        let arg = String::from("2");
+
+        assert_eq!(parse_scene_id_arg(Some(&arg)), Ok(2));
+    }
+
+    #[test]
+    fn parse_scene_id_arg_rejects_non_number() {
+        let arg = String::from("abc");
+
+        assert_eq!(parse_scene_id_arg(Some(&arg)), Err("invalid"));
+    }
+
+    #[test]
+    fn parse_scene_id_arg_reports_missing_argument() {
+        assert_eq!(parse_scene_id_arg(None), Err("missing"));
     }
 }
