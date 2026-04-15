@@ -143,6 +143,22 @@ fn print_scene_summary(scene: &DemoScene) {
     }
 }
 
+fn print_path_details(path: &[GridPosition]) {
+    println!("path point count: {}", path.len());
+
+    let move_count = if path.len() > 0 {
+        path.len() - 1 
+    } else {
+        0
+    };
+
+    println!("path move count: {}", move_count);
+
+    for (step_index, position) in path.iter().enumerate() {
+        println!("step {}: ({}, {})", step_index, position.x, position.y);
+    }
+}
+
 fn main() {
     let planner = AStartPlanner;
     let scene_id = read_scene_id();
@@ -152,7 +168,7 @@ fn main() {
 
     match planner.plan(&map, scene.start, scene.goal) {
         Ok(path) => {
-            println!("planned path: {:?}", path);
+            print_path_details(&path);
             print_map_with_path(&map, &path, scene.start, scene.goal);
         }
         Err(error) => {
