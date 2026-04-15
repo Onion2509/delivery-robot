@@ -17,7 +17,23 @@ fn print_map_with_path(
     start: GridPosition,
     goal: GridPosition,
 ) {
+    let max_x = map.width() - 1;
+    let max_y = map.height() - 1;
+    let coord_width = max_x.max(max_y).to_string().len();
+
+    println!("map (x ->, y down):");
+
+    print!("{:>width$} ", "", width = coord_width);
+    
+    for x in 0..map.width() {
+        print!("{:>width$} ", x, width = coord_width);
+    }
+
+    println!();
+
     for y in 0..map.height() {
+        print!("{:>width$} ", y, width = coord_width);
+
         for x in 0..map.width() {
             let position = GridPosition { x, y };
 
@@ -33,7 +49,7 @@ fn print_map_with_path(
                 '#'
             };
 
-            print!("{}", symbol);
+            print!("{:>width$} ", symbol, width = coord_width);
         }
 
         println!();
@@ -44,10 +60,10 @@ fn build_demo_scene(scene_id: u8) -> DemoScene {
     match scene_id {
         1 => DemoScene {
             name: "basic",
-            width: 3,
-            height: 3,
+            width: 15,
+            height: 15,
             start: GridPosition { x: 0, y: 0 },
-            goal: GridPosition { x: 2, y: 2 },
+            goal: GridPosition { x: 14, y: 14 },
             obstacles: vec![
                 GridPosition { x: 1, y: 0 },
                 GridPosition { x: 1, y: 1 },
@@ -115,13 +131,24 @@ fn read_scene_id() -> u8 {
     }
 }
 
+fn print_scene_summary(scene: &DemoScene) {
+    println!("running scene: {}", scene.name);
+    println!("size: {}x{}", scene.width,scene.height);
+    println!("start: ({}, {})", scene.start.x, scene.start.y);
+    println!("goal: ({}, {})", scene.goal.x, scene.goal.y);
+    println!("obstacle count: {}", scene.obstacles.len());
+
+    for obstacle in &scene.obstacles {
+        println!("obstacle: ({}, {})", obstacle.x, obstacle.y);
+    }
+}
+
 fn main() {
     let planner = AStartPlanner;
     let scene_id = read_scene_id();
     let scene = build_demo_scene(scene_id);
+    print_scene_summary(&scene);
     let map = build_map(&scene);
-
-    println!("running scene : {}", scene.name);
 
     match planner.plan(&map, scene.start, scene.goal) {
         Ok(path) => {
