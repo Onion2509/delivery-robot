@@ -1,2 +1,3 @@
 target/
 rust_ws/target
+.vscode/settings.json
