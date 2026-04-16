@@ -2,6 +2,12 @@ use grid_map::{GridMap, GridPosition};
 use path_planning::{AStartPlanner, PathPlanner};
 use std::env;
 
+const START_SYMBOL: char = 'S';
+const GOAL_SYMBOL: char = 'G';
+const PATH_SYMBOL: char = '*';
+const FREE_SYMBOL: char = '.';
+const OBSTACLE_SYMBOL: char = '#';
+
 struct DemoScene {
     name: &'static str,
     width: usize,
@@ -21,6 +27,7 @@ fn print_map_with_path(
     let max_y = map.height() - 1;
     let coord_width = max_x.max(max_y).to_string().len();
 
+    println!("== Map View ==");
     println!("map (x ->, y down):");
 
     print!("{:>width$} ", "", width = coord_width);
@@ -38,15 +45,15 @@ fn print_map_with_path(
             let position = GridPosition { x, y };
 
             let symbol = if position == start {
-                'S'
+                START_SYMBOL
             } else if position == goal {
-                'G'
+                GOAL_SYMBOL
             } else if path.contains(&position) {
-                '*'
+                PATH_SYMBOL
             } else if map.is_walkable(position).unwrap() {
-                '.'
+                FREE_SYMBOL
             } else {
-                '#'
+                OBSTACLE_SYMBOL
             };
 
             print!("{:>width$} ", symbol, width = coord_width);
@@ -132,6 +139,7 @@ fn read_scene_id() -> u8 {
 }
 
 fn print_scene_summary(scene: &DemoScene) {
+    println!("== Scene Summary ==");
     println!("running scene: {}", scene.name);
     println!("size: {}x{}", scene.width,scene.height);
     println!("start: ({}, {})", scene.start.x, scene.start.y);
@@ -143,7 +151,22 @@ fn print_scene_summary(scene: &DemoScene) {
     }
 }
 
+fn describe_step(from: GridPosition, to: GridPosition) -> &'static str {
+    if to.x > from.x {
+        "→"
+    } else if to.x < from.x {
+        "←"
+    } else if to.y > from.y {
+        "↓"
+    } else if to.y < from.y {
+        "↑"
+    } else {
+        "."
+    }
+}
+
 fn print_path_details(path: &[GridPosition]) {
+    println!("== Path Details ==");
     println!("path point count: {}", path.len());
 
     let move_count = if path.len() > 0 {
@@ -157,22 +180,48 @@ fn print_path_details(path: &[GridPosition]) {
     for (step_index, position) in path.iter().enumerate() {
         println!("step {}: ({}, {})", step_index, position.x, position.y);
     }
+
+    if path.len() >= 2 {
+        println!();
+        println!("== Step Directions ==");
+
+        for step_index in 1..path.len() {
+            let from = path[step_index - 1];
+            let to = path[step_index];
+            let direction = describe_step(from, to);
+
+            println!(
+                "move {}: ({}, {}) -> ({}, {}) [{}]",
+                step_index - 1,
+                from.x,
+                from.y,
+                to.x,
+                to.y,
+                direction,
+            );
+        }
+    }
 }
 
 fn main() {
     let planner = AStartPlanner;
     let scene_id = read_scene_id();
     let scene = build_demo_scene(scene_id);
-    print_scene_summary(&scene);
     let map = build_map(&scene);
+
+    print_scene_summary(&scene);
+    println!();
 
     match planner.plan(&map, scene.start, scene.goal) {
         Ok(path) => {
             print_path_details(&path);
+            println!();
             print_map_with_path(&map, &path, scene.start, scene.goal);
         }
         Err(error) => {
+            println!("== Planning Result ==");
             println!("planning failed: {:?}", error);
+            println!();
             print_map_with_path(&map, &[], scene.start, scene.goal);
         }
     }
