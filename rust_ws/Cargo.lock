@@ -24,8 +24,10 @@ dependencies = [
 name = "planner_cli"
 version = "0.1.0"
 dependencies = [
+ "config",
  "grid_map",
  "path_planning",
+ "task_core",
 ]
 
 [[package]]

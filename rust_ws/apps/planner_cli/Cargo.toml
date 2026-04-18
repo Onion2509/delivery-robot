@@ -4,5 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+config = { path = "../../libs/config" }
 grid_map = { path = "../../libs/grid_map" }
 path_planning = { path = "../../libs/path_planning" }
+task_core = { path = "../../libs/task_core" }

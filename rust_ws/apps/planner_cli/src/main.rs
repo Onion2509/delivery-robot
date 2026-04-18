@@ -1,6 +1,8 @@
+use config::AppConfig;
 use grid_map::{GridMap, GridPosition};
 use path_planning::{AStartPlanner, PathPlanner};
 use std::env;
+use task_core::DeliveryTask;
 
 const START_SYMBOL: char = 'S';
 const GOAL_SYMBOL: char = 'G';
@@ -10,11 +12,7 @@ const OBSTACLE_SYMBOL: char = '#';
 
 struct DemoScene {
     name: &'static str,
-    width: usize,
-    height: usize,
-    start: GridPosition,
-    goal: GridPosition,
-    obstacles: Vec<GridPosition>,
+    config: AppConfig,
 }
 
 fn print_map_with_path(
@@ -67,45 +65,42 @@ fn build_demo_scene(scene_id: u8) -> DemoScene {
     match scene_id {
         1 => DemoScene {
             name: "basic",
-            width: 15,
-            height: 15,
-            start: GridPosition { x: 0, y: 0 },
-            goal: GridPosition { x: 14, y: 14 },
-            obstacles: vec![
-                GridPosition { x: 1, y: 0 },
-                GridPosition { x: 1, y: 1 },
-            ],
+            config: AppConfig::default(),
         },
         2 => DemoScene {
             name: "blocked_start",
-            width: 3,
-            height: 3,
-            start: GridPosition { x: 0, y: 0 },
-            goal: GridPosition { x: 2, y: 2 },
-            obstacles: vec![
-                GridPosition { x: 1, y: 0 },
-                GridPosition { x: 0, y: 1 },
-            ],
+            config: AppConfig {
+                map_width: 3,
+                map_height: 3,
+                start: GridPosition { x: 0, y: 0 },
+                goal: GridPosition { x: 2, y: 2 },
+                obstacles: vec![
+                    GridPosition { x: 1, y: 0 },
+                    GridPosition { x: 0, y: 1 },
+                ],
+            },
         },
         other => {
             println!("unknow scene id {}, using empty scene", other);
             
             DemoScene {
-            name: "empty",
-            width: 3,
-            height: 3,
-            start: GridPosition { x: 0, y: 0 },
-            goal: GridPosition { x: 2, y: 2 },
-            obstacles: vec![],
+                name: "empty",
+                config: AppConfig {
+                    map_width: 3,
+                    map_height: 3,
+                    start:GridPosition { x: 0, y: 0 },
+                    goal: GridPosition { x: 2, y: 2 },
+                    obstacles: vec![],
+                },
             }
         }
     }
 }
 
-fn build_map(scene: &DemoScene) -> GridMap {
-    let mut map = GridMap::new(scene.width, scene.height);
+fn build_map(config: &AppConfig) -> GridMap {
+    let mut map = GridMap::new(config.map_width, config.map_height);
 
-    for obstacle in &scene.obstacles {
+    for obstacle in &config.obstacles {
         map.set_walkable(*obstacle, false).unwrap();
     }
 
@@ -141,14 +136,25 @@ fn read_scene_id() -> u8 {
 fn print_scene_summary(scene: &DemoScene) {
     println!("== Scene Summary ==");
     println!("running scene: {}", scene.name);
-    println!("size: {}x{}", scene.width,scene.height);
-    println!("start: ({}, {})", scene.start.x, scene.start.y);
-    println!("goal: ({}, {})", scene.goal.x, scene.goal.y);
-    println!("obstacle count: {}", scene.obstacles.len());
+    println!("size: {}x{}", scene.config.map_width,scene.config.map_height);
+    println!("start: ({}, {})", scene.config.start.x, scene.config.start.y);
+    println!("goal: ({}, {})", scene.config.goal.x, scene.config.goal.y);
+    println!("obstacle count: {}", scene.config.obstacles.len());
 
-    for obstacle in &scene.obstacles {
+    for obstacle in &scene.config.obstacles {
         println!("obstacle: ({}, {})", obstacle.x, obstacle.y);
     }
+}
+
+fn print_task_summary(task: &DeliveryTask) {
+    println!("== Task Summary ==");
+    println!("task id: {}", task.id());
+    println!(
+        "task destination: ({}, {})",
+        task.destination().x,
+        task.destination().y
+    );
+    println!("task state: {:?}", task.state());
 }
 
 fn describe_step(from: GridPosition, to: GridPosition) -> &'static str {
@@ -207,22 +213,64 @@ fn main() {
     let planner = AStartPlanner;
     let scene_id = read_scene_id();
     let scene = build_demo_scene(scene_id);
-    let map = build_map(&scene);
+
+    if let Err(error) = scene.config.validate() {
+        println!("== Config Error ==");
+        println!("invalid config: {:?}", error);
+        return;
+    }
+
+    let map = build_map(&scene.config);
+    let mut task = DeliveryTask::new(1, scene.config.goal);
 
     print_scene_summary(&scene);
     println!();
+    print_task_summary(&task);
+    println!();
 
-    match planner.plan(&map, scene.start, scene.goal) {
+    if let Err(error) = task.assign() {
+        println!("== Task Error ==");
+        println!("failed to assign task: {:?}", error);
+        return;
+    }
+
+    if let Err(error) = task.start_navigation() {
+        println!("== Task Error ==");
+        println!("failed to start navigation: {:?}", error);
+        return;
+    }
+
+    println!("== Task Progress ==");
+    println!("task state after start: {:?}", task.state());
+    println!();
+
+    match planner.plan(&map, scene.config.start, task.destination()) {
         Ok(path) => {
+            if let Err(error) = task.complete() {
+                println!("== Task Error ==");
+                println!("failed to complete task: {:?}", error);
+                return;
+            }
+
             print_path_details(&path);
             println!();
-            print_map_with_path(&map, &path, scene.start, scene.goal);
+            print_map_with_path(&map, &path, scene.config.start, task.destination());
+            println!();
+            print_task_summary(&task);
         }
         Err(error) => {
+            if let Err(task_error) = task.fail() {
+                println!("== Task Error ==");
+                println!("failed to mark task as failed: {:?}", task_error);
+                return;
+            }
+
             println!("== Planning Result ==");
             println!("planning failed: {:?}", error);
             println!();
-            print_map_with_path(&map, &[], scene.start, scene.goal);
+            print_map_with_path(&map, &[], scene.config.start, task.destination());
+            println!();
+            print_task_summary(&task);
         }
     }
 }
