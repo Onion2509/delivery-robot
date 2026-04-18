@@ -5,6 +5,9 @@ version = 4
 [[package]]
 name = "config"
 version = "0.1.0"
+dependencies = [
+ "grid_map",
+]
 
 [[package]]
 name = "grid_map"
