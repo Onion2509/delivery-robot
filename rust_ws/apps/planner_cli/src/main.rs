@@ -1,8 +1,8 @@
 use config::AppConfig;
 use grid_map::{GridMap, GridPosition};
-use path_planning::{AStartPlanner, PathPlanner};
+use path_planning::{AStartPlanner, PathPlanner, PathPlanningError};
 use std::env;
-use task_core::DeliveryTask;
+use task_core::{DeliveryTask, TaskError};
 
 const START_SYMBOL: char = 'S';
 const GOAL_SYMBOL: char = 'G';
@@ -13,6 +13,12 @@ const OBSTACLE_SYMBOL: char = '#';
 struct DemoScene {
     name: &'static str,
     config: AppConfig,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+enum RunTaskError {
+    Task(TaskError),
+    Planning(PathPlanningError),
 }
 
 fn print_map_with_path(
@@ -105,6 +111,42 @@ fn build_map(config: &AppConfig) -> GridMap {
     }
 
     map
+}
+
+fn build_task_from_scene(scene: &DemoScene) -> DeliveryTask {
+    DeliveryTask::new(1, scene.config.goal)
+}
+
+fn run_task(
+    planner: &AStartPlanner,
+    map: &GridMap,
+    start: GridPosition,
+    task: &mut DeliveryTask,
+) -> Result<Vec<GridPosition>, RunTaskError> {
+    if let Err(error) = task.assign() {
+        return Err(RunTaskError::Task(error));
+    }
+
+    if let Err(error) = task.start_navigation() {
+        return Err(RunTaskError::Task(error));
+    }
+
+    match planner.plan(map, start, task.destination()) {
+        Ok(path) => {
+            if let Err(error) = task.complete() {
+                return Err(RunTaskError::Task(error))
+            }
+
+            Ok(path)
+        }
+        Err(error) => {
+            if let Err(task_error) = task.fail() {
+                return Err(RunTaskError::Task(task_error))
+            }
+
+            Err(RunTaskError::Planning(error))
+        }
+    }
 }
 
 fn parse_scene_id_arg(arg: Option<&String>) -> Result<u8, &'static str> {
@@ -221,54 +263,38 @@ fn main() {
     }
 
     let map = build_map(&scene.config);
-    let mut task = DeliveryTask::new(1, scene.config.goal);
+    let mut task = build_task_from_scene(&scene);
 
     print_scene_summary(&scene);
     println!();
     print_task_summary(&task);
     println!();
 
-    if let Err(error) = task.assign() {
-        println!("== Task Error ==");
-        println!("failed to assign task: {:?}", error);
-        return;
-    }
-
-    if let Err(error) = task.start_navigation() {
-        println!("== Task Error ==");
-        println!("failed to start navigation: {:?}", error);
-        return;
-    }
+    let run_result = run_task(&planner, &map, scene.config.start, &mut task);
 
     println!("== Task Progress ==");
-    println!("task state after start: {:?}", task.state());
+    println!("task state after run: {:?}", task.state());
     println!();
 
-    match planner.plan(&map, scene.config.start, task.destination()) {
+    match run_result {
         Ok(path) => {
-            if let Err(error) = task.complete() {
-                println!("== Task Error ==");
-                println!("failed to complete task: {:?}", error);
-                return;
-            }
-
             print_path_details(&path);
             println!();
             print_map_with_path(&map, &path, scene.config.start, task.destination());
             println!();
             print_task_summary(&task);
         }
-        Err(error) => {
-            if let Err(task_error) = task.fail() {
-                println!("== Task Error ==");
-                println!("failed to mark task as failed: {:?}", task_error);
-                return;
-            }
-
+        Err(RunTaskError::Planning(error)) => {
             println!("== Planning Result ==");
             println!("planning failed: {:?}", error);
             println!();
             print_map_with_path(&map, &[], scene.config.start, task.destination());
+            println!();
+            print_task_summary(&task);
+        }
+        Err(RunTaskError::Task(error)) => {
+            println!("== Task Error ==");
+            println!("task state transition failed: {:?}", error);
             println!();
             print_task_summary(&task);
         }
