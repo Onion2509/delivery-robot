@@ -323,4 +323,42 @@ mod tests {
     fn parse_scene_id_arg_reports_missing_argument() {
         assert_eq!(parse_scene_id_arg(None), Err("missing"));
     }
+
+    #[test]
+    fn build_task_from_scene_uses_scene_goal() {
+        let scene = build_demo_scene(1);
+        let task = build_task_from_scene(&scene);
+
+        assert_eq!(task.destination(), scene.config.goal);
+        assert_eq!(task.state(), task_core::TaskState::Pending);
+    }
+
+    #[test]
+    fn run_task_completes_task_when_path_exists() {
+        let planner = AStartPlanner;
+        let scene = build_demo_scene(1);
+        let map = build_map(&scene.config);
+        let mut task = build_task_from_scene(&scene);
+
+        let result = run_task(&planner, &map, scene.config.start, &mut task);
+
+        assert!(result.is_ok());
+        assert_eq!(task.state(), task_core::TaskState::Completed);
+    }
+
+    #[test]
+    fn run_task_marks_task_failed_when_no_path_exists() {
+        let planner = AStartPlanner;
+        let scene = build_demo_scene(2);
+        let map = build_map(&scene.config);
+        let mut task = build_task_from_scene(&scene);
+
+        let result = run_task(&planner, &map, scene.config.start, &mut task);
+
+        assert_eq!(
+            result,
+            Err(RunTaskError::Planning(PathPlanningError::NoPathFound))
+        );
+        assert_eq!(task.state(), task_core::TaskState::Failed);
+    }
 }
